@@ -2,7 +2,7 @@
 #define PHILO_H
 
 #include <stdio.h>
-#include "libft/srcs/libft.h"
+#include "libft/libft.h"
 
 
 

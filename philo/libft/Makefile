@@ -1,59 +1,33 @@
 CC = cc
+
 CFLAGS = -Wall -Wextra -Werror
-LIBS = -lreadline
 
-NAME = minishell
-INCLUDES = -Iheaders
-OBJSDIR = objs/
-SRCSDIR = srcs/
-LIBFTDIR = libft/
-LIBFT = libft/libft.a
+NAME = libft.a
 
-LEXING = lexer.c lexer_utils.c lexer_utils2.c expand.c expand2.c
-TABLE = create_exec_table.c
-EXECUTING = execution.c get_cmd_arguments.c getpath.c execution_utils.c pipes.c
-BUILTINS = cd.c env.c exit.c export.c pwd.c unset.c echo.c
-CLEARING = cleaners.c
-UTILS = utils.c utils2.c utils3.c
-
-SRCS = minishell.c $(addprefix lexing/, $(LEXING)) $(addprefix create_execution_table/, $(TABLE)) $(addprefix executing/, $(EXECUTING)) \
-		$(addprefix builtins/, $(BUILTINS)) $(addprefix clearing/, $(CLEARING)) $(addprefix utils/, $(UTILS))
-
-BONUS_SRCS = minishell.c $(addprefix lexing/, $(LEXING)) $(addprefix create_execution_table/, $(TABLE)) $(addprefix executing/, $(EXECUTING)) \
-		$(addprefix builtins/, $(BUILTINS)) $(addprefix clearing/, $(CLEARING)) $(addprefix utils/, $(UTILS))
-
-SRCS_PATHS = $(addprefix $(SRCSDIR), $(SRCS))
-BONUS_PATHS = $(addprefix $(SRCSDIR), $(BONUS_SRCS))
-
-OBJS = $(SRCS_PATHS:$(SRCSDIR)%.c=$(OBJSDIR)%.o)
-OBJS_BONUS = $(BONUS_PATHS:$(SRCSDIR)%.c=$(OBJSDIR)%.o)
+SRC = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft_isdigit.c ft_isprint.c \
+	ft_itoa.c ft_memchr.c ft_memcmp.c ft_memcpy.c ft_memmove.c ft_memset.c ft_putchar_fd.c ft_putendl_fd.c \
+	ft_putnbr_fd.c ft_putstr_fd.c ft_split.c ft_strchr.c ft_strdup.c ft_striteri.c ft_strjoin.c ft_strlcat.c \
+	ft_strlcpy.c ft_strlen.c ft_strmapi.c ft_strncmp.c ft_strnstr.c ft_strrchr.c \
+	ft_strtrim.c ft_substr.c ft_tolower.c ft_toupper.c ft_lstdelone.c ft_lstclear.c \
+	ft_lstadd_back.c ft_lstadd_front.c ft_lstiter.c ft_lstlast.c ft_lstmap.c ft_lstnew.c \
+	ft_lstsize.c
 
 all: $(NAME)
 
-bonus: $(OBJS_BONUS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBFT) $(INCLUDES) $(LIBS) -o $(NAME)
+OBJ = $(SRC:.c=.o)
 
-$(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(INCLUDES) $(LIBS) -o $(NAME)
+$(NAME): $(OBJ)
+	ar rcs $(NAME) $(OBJ)
 
-$(OBJSDIR)%.o: $(SRCSDIR)%.c
-	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(LIBFT):
-	make -C $(LIBFTDIR)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJSDIR)
-	make -C $(LIBFTDIR) clean
+	rm -rf $(OBJ)
 
 fclean: clean
 	rm -rf $(NAME)
-	make -C $(LIBFTDIR) fclean
-
-ct:
-	rm -rf tmp_err_bash tmp_err_minishell tmp_out_bash tmp_out_minishell
 
 re: fclean all
 
-.PHONY: all clean fclean re bonus
+.PHONY: clean all re fclean
