@@ -50,10 +50,22 @@ int check_arguments(int argc, char **argv)
     return (0);
 }
 
+void *print_helloworld()
+{
+    printf("HOLAAAA  MUNDITO!");
+    return (NULL);
+}
+
 int main(int argc, char **argv)
 {
     if (!check_arguments(argc, argv))
         return (1);
     
+    t_philo philo1;
+    t_philo philo2;
+
+    pthread_create(&philo1.thread, NULL, print_helloworld,NULL);
+    pthread_create(&philo2.thread, NULL, print_helloworld,NULL);
+
     return (0);
 }
