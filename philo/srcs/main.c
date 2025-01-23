@@ -50,26 +50,34 @@ int check_arguments(int argc, char **argv)
     return (0);
 }
 
-void *print_helloworld(void *arg)
+void create_philos(int number_philo, t_program program)
 {
-    (void)arg;
-    sleep(3);
-    printf("HOLAAAA  MUNDITO!");
-    return (NULL);
+    int i;
+    t_philo *philo;
+
+    i = 0;
+    while(i < number_philo)
+    {
+        philo = (t_philo*)malloc(sizeof(t_philo));
+        philo->id = i+1;
+        program.philos[i] = *philo;
+        i++;
+    }
 }
 
 int main(int argc, char **argv)
 {
-    t_philo philo1;
-    t_philo philo2;
+    t_program *program;    
 
+    program = (t_program*)malloc(sizeof(t_program));
     if (check_arguments(argc, argv) != 0)
         return (1);
-    pthread_create(&philo1.thread, NULL, print_helloworld, NULL);
-    pthread_create(&philo2.thread, NULL, print_helloworld, NULL);
-
-    pthread_join(philo1.thread, NULL);
-    pthread_join(philo2.thread, NULL);
-
+    create_philos(ft_atoi(argv[1]), *program);
+    int i= 0;
+    while(i < ft_atoi(argv[1]))
+    {
+        printf("%i\n", (*program).philos[i].id);
+        i++;
+    }
     return (0);
 }

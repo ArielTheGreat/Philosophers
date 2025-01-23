@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 typedef struct philo
 {
@@ -23,7 +24,7 @@ typedef struct philo
 	pthread_mutex_t	*l_fork;
     pthread_mutex_t	*write_lock;
 	pthread_mutex_t	*dead_lock;
-	pthread_mutex_t	*meal_lock
+	pthread_mutex_t	*meal_lock;
 }   t_philo;
 
 typedef struct s_program
