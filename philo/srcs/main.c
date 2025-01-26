@@ -50,33 +50,57 @@ int check_arguments(int argc, char **argv)
     return (0);
 }
 
-void create_philos(int number_philo, t_program program)
+void initialize_philos(char **argv, t_program *program, int argc)
 {
     int i;
-    t_philo *philo;
+    int number_philos;
+    int number_times_to_eat;
 
     i = 0;
-    while(i < number_philo)
+    if (argc == 6)
+        number_times_to_eat = ft_atoi(argv[5]);
+    else
+        number_times_to_eat = -1;
+    number_philos = ft_atoi(argv[1]);
+    while(i < number_philos)
     {
-        philo = (t_philo*)malloc(sizeof(t_philo));
-        philo->id = i+1;
-        program.philos[i] = *philo;
+        program->philos[i].id = i + 1;
+        program->philos[i].eating = 0;
+        program->philos[i].meals_eaten = 0;
+        program->philos[i].num_of_philos = number_philos;
+        program->philos[i].time_to_die = ft_atoi(argv[2]);
+        program->philos[i].time_to_eat = ft_atoi(argv[3]);
+        program->philos[i].time_to_sleep = ft_atoi(argv[4]);
+        program->philos[i].num_times_to_eat = number_times_to_eat;
+        program->philos[i].start_time = 0;
+        program->philos[i].dead = &program->dead_flag;
+        program->philos[i].write_lock = &program->write_lock;
+        program->philos[i].meal_lock = &program->meal_lock;
+        program->philos[i].dead_lock = &program->dead_lock;
         i++;
     }
 }
 
+void inititate_program(t_program **program, int number_philos)
+{
+    *program = (t_program*)malloc(sizeof(t_program));
+
+    (*program)->philos = (t_philo *)malloc(number_philos * sizeof(t_philo));
+}
+
 int main(int argc, char **argv)
 {
-    t_program *program;    
+    t_program *program;
 
-    program = (t_program*)malloc(sizeof(t_program));
+    program = NULL;
     if (check_arguments(argc, argv) != 0)
         return (1);
-    create_philos(ft_atoi(argv[1]), *program);
+    inititate_program(&program, ft_atoi(argv[1]));
+    initialize_philos(argv, program, argc);
     int i= 0;
     while(i < ft_atoi(argv[1]))
     {
-        printf("%i\n", (*program).philos[i].id);
+        printf("%i\n", program->philos[i].id);
         i++;
     }
     return (0);
