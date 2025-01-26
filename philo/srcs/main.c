@@ -122,6 +122,8 @@ int main(int argc, char **argv)
     if (check_arguments(argc, argv) != 0)
         return (1);
     inititate_program(&program, ft_atoi(argv[1]));
+     if (!program)
+        return (1);
     initialize_philos(argv, program, argc);
     int i= 0;
     while(i < ft_atoi(argv[1]))
