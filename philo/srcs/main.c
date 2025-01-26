@@ -83,6 +83,8 @@ void initialize_philos(char **argv, t_program *program, int argc)
 
 void inititate_program(t_program **program, int number_philos)
 {
+    int i;
+
     *program = (t_program*)malloc(sizeof(t_program));
     if (!*program)
         return;
@@ -95,6 +97,20 @@ void inititate_program(t_program **program, int number_philos)
     {
         free(*program);
         return;
+    }
+    pthread_mutex_t *forks = malloc(number_philos * sizeof(pthread_mutex_t));
+    if (!forks)
+    {
+        free((*program)->philos);
+        free(*program);
+        return;
+    }
+    for (i = 0; i < number_philos; i++)
+        pthread_mutex_init(&forks[i], NULL);
+    for (i = 0; i < number_philos; i++)
+    {
+        (*program)->philos[i].l_fork = &forks[i];
+        (*program)->philos[i].r_fork = &forks[(i + 1) % number_philos];
     }
 }
 
