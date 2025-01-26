@@ -36,4 +36,8 @@ typedef struct s_program
 	t_philo			*philos;
 }					t_program;
 
+int	ft_atoi(const char *str);
+void initialize_philos(char **argv, t_program *program, int argc);
+void inititate_program(t_program **program, int number_philos);
+
 #endif
