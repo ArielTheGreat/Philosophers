@@ -84,8 +84,18 @@ void initialize_philos(char **argv, t_program *program, int argc)
 void inititate_program(t_program **program, int number_philos)
 {
     *program = (t_program*)malloc(sizeof(t_program));
-
+    if (!*program)
+        return;
+    (*program)->dead_flag = 0;
+    pthread_mutex_init(&(*program)->dead_lock, NULL);
+    pthread_mutex_init(&(*program)->meal_lock, NULL);
+    pthread_mutex_init(&(*program)->write_lock, NULL);
     (*program)->philos = (t_philo *)malloc(number_philos * sizeof(t_philo));
+    if (!(*program)->philos)
+    {
+        free(*program);
+        return;
+    }
 }
 
 int main(int argc, char **argv)
