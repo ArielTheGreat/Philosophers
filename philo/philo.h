@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 typedef struct philo
 {
@@ -39,5 +40,6 @@ typedef struct s_program
 int	ft_atoi(const char *str);
 void initialize_philos(char **argv, t_program *program, int argc);
 void inititate_program(t_program **program, int number_philos);
+size_t get_current_time();
 
 #endif
