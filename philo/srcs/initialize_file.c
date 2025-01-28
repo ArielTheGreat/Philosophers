@@ -25,10 +25,10 @@ void initialize_philos(char **argv, t_program *program, int argc)
         program->philos[i].num_times_to_eat = number_times_to_eat;
         program->philos[i].start_time = start_time;
         program->philos[i].last_meal = start_time;
-        program->philos[i].dead = &program->dead_flag;
-        program->philos[i].write_lock = &program->write_lock;
-        program->philos[i].meal_lock = &program->meal_lock;
-        program->philos[i].dead_lock = &program->dead_lock;
+        program->philos[i].dead = &(program->dead_flag);
+        program->philos[i].write_lock = &(program->write_lock);
+        program->philos[i].meal_lock = &(program->meal_lock);
+        program->philos[i].dead_lock = &(program->dead_lock);
         i++;
     }
 }

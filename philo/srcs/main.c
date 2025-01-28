@@ -29,94 +29,67 @@ int check_arguments(int argc, char **argv)
     return (0);
 }
 
+int check_dead(t_philo *philo)
+{
+    pthread_mutex_lock(philo->dead_lock);
+    if (*philo->dead == 1)
+    {
+        pthread_mutex_unlock(philo->dead_lock);
+        return 42;
+    }
+    pthread_mutex_unlock(philo->dead_lock);
+    return 0;
+}
+
+void write_message(t_philo *philo, char *str)
+{
+    if (check_dead(philo) == 42)
+            return;
+    pthread_mutex_lock(philo->write_lock);
+    printf("%zu Philosopher %d %s\n", get_current_time() - philo->start_time, philo->id, str);
+    pthread_mutex_unlock(philo->write_lock);
+}
+
 void *philo_update(void *philo_void)
 {
     t_philo *philo = (t_philo *)philo_void;
 
     while (1)
     {
-        pthread_mutex_lock(philo->dead_lock);
-        if (*philo->dead == 1)
+        if (check_dead(philo) == 42)
+            break;
+        if (philo->id % 2 == 0)
+            usleep(50);
+        pthread_mutex_lock(philo->l_fork);
+        write_message(philo, "has taken a fork");
+        if (check_dead(philo) == 42)
         {
-            pthread_mutex_unlock(philo->dead_lock);
+            pthread_mutex_unlock(philo->l_fork);
             break;
         }
-        pthread_mutex_unlock(philo->dead_lock);
-        if (philo->id % 2 == 0)
+        pthread_mutex_lock(philo->r_fork);
+        write_message(philo, "has taken a fork");
+        if (check_dead(philo) == 42)
         {
-            usleep(1000);
-            pthread_mutex_lock(philo->dead_lock);
-            if (*philo->dead == 1)
-            {
-                pthread_mutex_unlock(philo->dead_lock);
-                break;
-            }
-            pthread_mutex_unlock(philo->dead_lock);
-            pthread_mutex_lock(philo->l_fork);
-            pthread_mutex_lock(philo->write_lock);
-            printf("%zu Philosopher %d has taken a fork\n", get_current_time() - philo->start_time, philo->id);
-            pthread_mutex_unlock(philo->write_lock);
-            pthread_mutex_lock(philo->dead_lock);
-            if (*philo->dead == 1)
-            {
-                pthread_mutex_unlock(philo->dead_lock);
-                break;
-            }
-            pthread_mutex_unlock(philo->dead_lock);
-            pthread_mutex_lock(philo->r_fork);
-            pthread_mutex_lock(philo->write_lock);
-            printf("%zu Philosopher %d has taken a fork\n", get_current_time() - philo->start_time, philo->id);
-            pthread_mutex_unlock(philo->write_lock);
-        }
-        else
-        {
-            pthread_mutex_lock(philo->dead_lock);
-            if (*philo->dead == 1)
-            {
-                pthread_mutex_unlock(philo->dead_lock);
-                break;
-            }
-            pthread_mutex_unlock(philo->dead_lock);
-            pthread_mutex_lock(philo->r_fork);
-            pthread_mutex_lock(philo->write_lock);
-            printf("%zu Philosopher %d has taken a fork\n", get_current_time() - philo->start_time, philo->id);
-            pthread_mutex_unlock(philo->write_lock);
-            if (philo->r_fork == philo->l_fork)
-            {
-                usleep(philo->time_to_die*1000);
-            }else{
-                pthread_mutex_lock(philo->l_fork);
-                pthread_mutex_lock(philo->write_lock);
-                printf("%zu Philosopher %d has taken a fork\n", get_current_time() - philo->start_time, philo->id);
-                pthread_mutex_unlock(philo->write_lock);
-            }
-        }
-        pthread_mutex_lock(philo->dead_lock);
-        if (*philo->dead == 1)
-        {
-            pthread_mutex_unlock(philo->dead_lock);
             pthread_mutex_unlock(philo->l_fork);
             pthread_mutex_unlock(philo->r_fork);
             break;
         }
-        pthread_mutex_unlock(philo->dead_lock);
         pthread_mutex_lock(philo->meal_lock);
         philo->last_meal = get_current_time();
         philo->meals_eaten++;
         pthread_mutex_unlock(philo->meal_lock);
-        printf("%zu Philosopher %d is eating\n", get_current_time() - philo->start_time, philo->id);
+        write_message(philo, "is eating");
         usleep(philo->time_to_eat * 1000);
         pthread_mutex_unlock(philo->l_fork);
         pthread_mutex_unlock(philo->r_fork);
-        pthread_mutex_lock(philo->dead_lock);
-        if (*philo->dead == 1)
-        {
-            pthread_mutex_unlock(philo->dead_lock);
+        if (check_dead(philo) == 42)
             break;
-        }
-        pthread_mutex_unlock(philo->dead_lock);
-        printf("%zu Philosopher %d is sleeping\n", get_current_time() - philo->start_time, philo->id);
+        write_message(philo, "is sleeping");
         usleep(philo->time_to_sleep * 1000);
+        if (check_dead(philo) == 42)
+            break;
+        write_message(philo, "is thinking");
     }
     return NULL;
 }
