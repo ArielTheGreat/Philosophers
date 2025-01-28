@@ -59,16 +59,28 @@ void *philo_update(void *philo_void)
         if (check_dead(philo) == 42)
             break;
         if (philo->id % 2 == 0)
-            usleep(50);
-        pthread_mutex_lock(philo->l_fork);
-        write_message(philo, "has taken a fork");
-        if (check_dead(philo) == 42)
         {
-            pthread_mutex_unlock(philo->l_fork);
-            break;
+            pthread_mutex_lock(philo->r_fork);
+            write_message(philo, "has taken a fork");
+            if (check_dead(philo) == 42)
+            {
+                pthread_mutex_unlock(philo->r_fork);
+                break;
+            }
+            pthread_mutex_lock(philo->l_fork);
+            write_message(philo, "has taken a fork");
+        }else
+        {
+            pthread_mutex_lock(philo->l_fork);
+            write_message(philo, "has taken a fork");
+            if (check_dead(philo) == 42)
+            {
+                pthread_mutex_unlock(philo->l_fork);
+                break;
+            }
+            pthread_mutex_lock(philo->r_fork);
+            write_message(philo, "has taken a fork");
         }
-        pthread_mutex_lock(philo->r_fork);
-        write_message(philo, "has taken a fork");
         if (check_dead(philo) == 42)
         {
             pthread_mutex_unlock(philo->l_fork);
