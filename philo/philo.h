@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
+typedef struct s_program t_program;
+
 typedef struct philo
 {
     pthread_t   thread;
@@ -26,6 +28,7 @@ typedef struct philo
     pthread_mutex_t	*write_lock;
 	pthread_mutex_t	*dead_lock;
 	pthread_mutex_t	*meal_lock;
+	t_program *program;
 }   t_philo;
 
 typedef struct s_program
@@ -35,6 +38,10 @@ typedef struct s_program
 	pthread_mutex_t	meal_lock;
 	pthread_mutex_t	write_lock;
 	t_philo			*philos;
+	int ready_count;
+    int total_count;
+    int release;
+    pthread_mutex_t mutex; 
 }					t_program;
 
 int	ft_atoi(const char *str);

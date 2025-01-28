@@ -26,6 +26,7 @@ void initialize_philos(char **argv, t_program *program, int argc)
         program->philos[i].write_lock = &(program->write_lock);
         program->philos[i].meal_lock = &(program->meal_lock);
         program->philos[i].dead_lock = &(program->dead_lock);
+        program->philos[i].program = program;
         i++;
     }
 }
@@ -35,6 +36,10 @@ void inititate_program(t_program **program, int number_philos)
     int i;
 
     *program = (t_program*)malloc(sizeof(t_program));
+    (*program)->ready_count = 0;
+    (*program)->total_count = number_philos + 1;
+    (*program)->release = 0;
+    pthread_mutex_init(&(*program)->mutex, NULL);
     if (!*program)
         return;
     (*program)->dead_flag = 0;
