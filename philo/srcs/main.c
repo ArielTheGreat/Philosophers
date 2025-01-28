@@ -46,7 +46,7 @@ void write_message(t_philo *philo, char *str)
     if (check_dead(philo) == 1)
             return;
     pthread_mutex_lock(philo->write_lock);
-    printf("%zu Philosopher %d %s\n", get_current_time() - philo->start_time, philo->id, str);
+    printf("%zu %d %s\n", get_current_time() - philo->start_time, philo->id, str);
     pthread_mutex_unlock(philo->write_lock);
 }
 
