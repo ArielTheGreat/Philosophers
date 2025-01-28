@@ -12,7 +12,6 @@ void initialize_philos(char **argv, t_program *program, int argc)
     else
         number_times_to_eat = -1;
     number_philos = ft_atoi(argv[1]);
-    size_t start_time = get_current_time();
     while(i < number_philos)
     {
         program->philos[i].id = i + 1;
@@ -23,8 +22,6 @@ void initialize_philos(char **argv, t_program *program, int argc)
         program->philos[i].time_to_eat = ft_atoi(argv[3]);
         program->philos[i].time_to_sleep = ft_atoi(argv[4]);
         program->philos[i].num_times_to_eat = number_times_to_eat;
-        program->philos[i].start_time = start_time;
-        program->philos[i].last_meal = start_time;
         program->philos[i].dead = &(program->dead_flag);
         program->philos[i].write_lock = &(program->write_lock);
         program->philos[i].meal_lock = &(program->meal_lock);
