@@ -57,7 +57,7 @@ void eat_thread(t_philo *philo)
     philo->last_meal = get_current_time();
     philo->meals_eaten++;
     pthread_mutex_unlock(philo->meal_lock);
-    usleep(philo->time_to_eat * 1000);
+    usleep(philo->time_to_eat);
     pthread_mutex_unlock(philo->l_fork);
     pthread_mutex_unlock(philo->r_fork);
 }
@@ -67,7 +67,7 @@ void sleep_thread(t_philo *philo)
     if (check_dead(philo) == 1)
         return;
     write_message(philo, "is sleeping");
-    usleep(philo->time_to_sleep * 1000);
+    usleep(philo->time_to_sleep);
     if (check_dead(philo) == 1)
         return;
     write_message(philo, "is thinking");

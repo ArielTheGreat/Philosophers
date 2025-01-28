@@ -19,8 +19,8 @@ void initialize_philos(char **argv, t_program *program, int argc)
         program->philos[i].meals_eaten = 0;
         program->philos[i].num_of_philos = number_philos;
         program->philos[i].time_to_die = ft_atoi(argv[2]);
-        program->philos[i].time_to_eat = ft_atoi(argv[3]);
-        program->philos[i].time_to_sleep = ft_atoi(argv[4]);
+        program->philos[i].time_to_eat = ft_atoi(argv[3]) * 1000;
+        program->philos[i].time_to_sleep = ft_atoi(argv[4]) * 1000;
         program->philos[i].num_times_to_eat = number_times_to_eat;
         program->philos[i].dead = &(program->dead_flag);
         program->philos[i].write_lock = &(program->write_lock);
