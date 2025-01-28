@@ -88,6 +88,7 @@ void *philo_update(void *philo_void)
     {
         if (philo->id % 2 == 0)
         {
+            usleep(50);
             take_fork(philo, philo->r_fork);
             if (check_dead(philo) == 1)
             {
