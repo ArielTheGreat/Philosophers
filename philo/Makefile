@@ -1,6 +1,10 @@
 SRC_DIR = srcs
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-OBJS = $(SRCS:.c=.o)
+OBJ_DIR = objs
+
+SRCS = $(SRC_DIR)/initialize_file.c $(SRC_DIR)/main.c $(SRC_DIR)/monitor_functions.c \
+        $(SRC_DIR)/philo_routine.c $(SRC_DIR)/utils.c $(SRC_DIR)/utils2.c
+
+OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
@@ -12,8 +16,14 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME)
