@@ -22,7 +22,6 @@ void initialize_philos(char **argv, t_program *program, int argc)
         program->philos[i].time_to_eat = ft_atoi(argv[3]) * 1000;
         program->philos[i].time_to_sleep = ft_atoi(argv[4]) * 1000;
         program->philos[i].num_times_to_eat = number_times_to_eat;
-        program->philos[i].dead = &(program->dead_flag);
         program->philos[i].write_lock = &(program->write_lock);
         program->philos[i].meal_lock = &(program->meal_lock);
         program->philos[i].dead_lock = &(program->dead_lock);
@@ -36,13 +35,8 @@ void inititate_program(t_program **program, int number_philos)
     int i;
 
     *program = (t_program*)malloc(sizeof(t_program));
-    (*program)->ready_count = 0;
-    (*program)->total_count = number_philos + 1;
-    (*program)->release = 0;
-    pthread_mutex_init(&(*program)->mutex, NULL);
     if (!*program)
         return;
-    (*program)->dead_flag = 0;
     pthread_mutex_init(&(*program)->dead_lock, NULL);
     pthread_mutex_init(&(*program)->meal_lock, NULL);
     pthread_mutex_init(&(*program)->write_lock, NULL);
