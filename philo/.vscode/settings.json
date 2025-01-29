@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "__threading_support": "c",
-        "ostream": "c",
-        "philo.h": "c"
-    }
-}
