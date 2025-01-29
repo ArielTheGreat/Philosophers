@@ -1,190 +1,90 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: frocha <frocha@student.42heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/29 13:07:19 by frocha            #+#    #+#             */
+/*   Updated: 2025/01/29 13:07:20 by frocha           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../philo.h"
 
-void *monitor(void *program_void);
-
-int check_arguments(int argc, char **argv)
+int	check_arguments(int argc, char **argv)
 {
-    (void)argv;
-    if (argc != 5 && argc != 6)
-    {
-        printf("Only 4 or 5 arguments are allowed");
-        return (1);
-    }
-    if (ft_atoi(argv[1]) > 200)
-    {
-        printf("Number of philosophers cannot be bigger than 200");
-        return (1);
-    }
-    if(ft_atoi(argv[1]) < 1 || ft_atoi(argv[2]) < 1 || ft_atoi(argv[3]) < 1 || ft_atoi(argv[4]) < 1)
-    {
-        printf("Any number of the parameters cannot be 0 or below 0. Except 5ft parameter.");
-        return (1);
-    }
-    if (argc == 6 && ft_atoi(argv[5]) < 0)
-    {
-        printf("5ft parameter cannot be below 0");
-        return (1);
-    }
-    return (0);
+	(void)argv;
+	if (argc != 5 && argc != 6)
+		error_message("Only 4 or 5 arguments are allowed\n", 1);
+	if (ft_atoi(argv[1]) > 200)
+		error_message("Number of philosophers cannot be bigger than 200\n", 1);
+	if (ft_atoi(argv[1]) < 1 || ft_atoi(argv[2]) < 1
+		|| ft_atoi(argv[3]) < 1 || ft_atoi(argv[4]) < 1)
+		error_message("Any number of the parameters cannot be 0 or below 0."
+			" Except 5th parameter.\n", 1);
+	if (argc == 6 && ft_atoi(argv[5]) < 0)
+		error_message("5th parameter cannot be below 0\n", 1);
+	return (0);
 }
 
-void write_message(t_philo *philo, char *str)
+void	*start_philo_thread(void *philo_void)
 {
-    pthread_mutex_lock(philo->write_lock);
-    printf("%zu %d %s\n", get_current_time() - philo->start_time, philo->id, str);
-    pthread_mutex_unlock(philo->write_lock);
+	t_philo	*philo;
+
+	philo = (t_philo *)philo_void;
+	if (philo->id % 2 == 0)
+		ft_usleep(1);
+	pthread_mutex_lock(philo->meal_lock);
+	philo->start_time = get_current_time();
+	philo->last_meal = get_current_time();
+	pthread_mutex_unlock(philo->meal_lock);
+	while (1)
+		philo_routine(philo);
+	return (NULL);
 }
 
-void eat_thread(t_philo *philo)
+int	create_threads(t_program *program, int philo_number)
 {
-    write_message(philo, "is eating");
-    pthread_mutex_lock(philo->meal_lock);
-    philo->last_meal = get_current_time();
-    philo->meals_eaten++;
-    pthread_mutex_unlock(philo->meal_lock);
-    usleep(philo->time_to_eat);
-    pthread_mutex_unlock(philo->l_fork);
-    pthread_mutex_unlock(philo->r_fork);
+	pthread_t	monitor_thread;
+	int			i;
+
+	i = -1;
+	while (++i < philo_number)
+	{
+		if (pthread_create(&program->philos[i].thread, NULL,
+				start_philo_thread, &program->philos[i]) != 0)
+			destroy_program(program, philo_number,
+				"Error: could not create thread\n");
+	}
+	if (pthread_create(&monitor_thread, NULL, &monitor, program->philos) != 0)
+		destroy_program(program, philo_number,
+			"Error: could not create thread\n");
+	if (pthread_join(monitor_thread, NULL) != 0)
+		destroy_program(program, philo_number,
+			"Error: could not join monitor\n");
+	i = -1;
+	while (++i < philo_number)
+	{
+		if (pthread_detach(program->philos[i].thread) != 0)
+			destroy_program(program, philo_number,
+				"Error: could not detach\n");
+	}
+	return (0);
 }
 
-void sleep_thread(t_philo *philo)
+int	main(int argc, char **argv)
 {
-    write_message(philo, "is sleeping");
-    usleep(philo->time_to_sleep);
-    write_message(philo, "is thinking");
-}
+	t_program	*program;
 
-void take_fork(t_philo *philo, pthread_mutex_t *fork)
-{
-    pthread_mutex_lock(fork);
-    write_message(philo, "has taken a fork");
-}
-
-void philo_routine(t_philo *philo)
-{
-    take_fork(philo, philo->l_fork);
-    take_fork(philo, philo->r_fork);
-    eat_thread(philo);
-    sleep_thread(philo);
-}
-
-void *start_philo_thread(void *philo_void)
-{
-    t_philo *philo = (t_philo *)philo_void;
-
-    if (philo->id % 2 == 0)
-		usleep(1);
-    pthread_mutex_lock(philo->meal_lock);
-    philo->start_time = get_current_time();
-    philo->last_meal = get_current_time();
-    pthread_mutex_unlock(philo->meal_lock);
-    while(1)
-        philo_routine(philo);
-    return (NULL);
-}
-
-void create_philo_threads(t_program *program)
-{
-    int i;
-
-    i = 0;
-    while (i < program->philos[0].num_of_philos)
-    {
-        pthread_create(&program->philos[i].thread, NULL, start_philo_thread, &program->philos[i]);
-        i++;
-    }
-}
-
-void join_philo_threads(t_program *program)
-{
-    int i;
-
-    i = 0;
-    while (i < program->philos[0].num_of_philos)
-    {
-        pthread_join(program->philos[i].thread, NULL);
-        i++;
-    }
-}
-
-int all_philo_ate(t_philo *philos)
-{
-    int i;
-    int finished;
-
-    if (philos[0].num_times_to_eat == -1)
-        return 0;
-    i = 0;
-    finished = 0;
-    while (i < philos[0].num_of_philos)
-    {
-        pthread_mutex_lock(philos[i].meal_lock);
-        if (philos[i].meals_eaten >= philos[i].num_times_to_eat)
-            finished++;
-        pthread_mutex_unlock(philos[i].meal_lock);
-        i++;
-    }
-    if (finished == philos[0].num_of_philos)
-        return 1;
-    return 0;
-}
-
-void *monitor(void *program_void)
-{
-    t_program *program = (t_program *)program_void;
-    int i;
-    size_t time_since_last_meal;
-
-    while (1)
-    {
-        i = 0;
-        while (i < program->philos[0].num_of_philos)
-        {
-            pthread_mutex_lock(&program->meal_lock);
-            time_since_last_meal = get_current_time() - program->philos[i].last_meal;
-            if (time_since_last_meal > program->philos[i].time_to_die)
-            {
-                write_message(&(program->philos[i]), "died");
-                pthread_mutex_unlock(&program->meal_lock);
-                return (NULL);
-            }
-            pthread_mutex_unlock(&program->meal_lock);
-            i++;
-        }
-        if (all_philo_ate(program->philos) == 1)
-			return (NULL);
-    }
-    return NULL;
-}
-
-void detach_philo_threads(t_program *program)
-{
-    int i;
-
-    i = 0;
-    while (i < program->philos[0].num_of_philos)
-    {
-        pthread_detach(program->philos[i].thread);
-        i++;
-    }
-}
-
-int main(int argc, char **argv)
-{
-    t_program *program;
-    pthread_t monitor_thread;
-
-    program = NULL;
-    if (check_arguments(argc, argv) != 0)
-        return (1);
-    inititate_program(&program, ft_atoi(argv[1]));
-     if (!program)
-        return (1);
-    initialize_philos(argv, program, argc);
-    create_philo_threads(program);
-    pthread_create(&monitor_thread, NULL, monitor, program);
-    pthread_join(monitor_thread, NULL);
-    detach_philo_threads(program);
-    return (0);
+	program = NULL;
+	if (check_arguments(argc, argv) != 0)
+		return (1);
+	initiate_program(&program, ft_atoi(argv[1]));
+	if (!program)
+		return (1);
+	initialize_philos(argv, program, argc);
+	create_threads(program, program->philos[0].num_of_philos);
+	destroy_program(program, program->philos[0].num_of_philos, 0);
+	return (0);
 }
