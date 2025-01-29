@@ -12,9 +12,8 @@
 
 #include "../philo.h"
 
-int	check_arguments(int argc, char **argv)
+void	check_arguments(int argc, char **argv)
 {
-	(void)argv;
 	if (argc != 5 && argc != 6)
 		error_message("Only 4 or 5 arguments are allowed\n", 1);
 	if (ft_atoi(argv[1]) > 200)
@@ -23,9 +22,8 @@ int	check_arguments(int argc, char **argv)
 		|| ft_atoi(argv[3]) < 1 || ft_atoi(argv[4]) < 1)
 		error_message("Any number of the parameters cannot be 0 or below 0."
 			" Except 5th parameter.\n", 1);
-	if (argc == 6 && ft_atoi(argv[5]) < 0)
-		error_message("5th parameter cannot be below 0\n", 1);
-	return (0);
+	if (argc == 6 && ft_atoi(argv[5]) <= 0)
+		error_message("5th parameter cannot be below or equal 0\n", 1);
 }
 
 void	*start_philo_thread(void *philo_void)
@@ -78,8 +76,7 @@ int	main(int argc, char **argv)
 	t_program	*program;
 
 	program = NULL;
-	if (check_arguments(argc, argv) != 0)
-		return (1);
+	check_arguments(argc, argv);
 	initiate_program(&program, ft_atoi(argv[1]));
 	if (!program)
 		return (1);
