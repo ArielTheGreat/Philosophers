@@ -26,7 +26,7 @@ void	check_arguments(int argc, char **argv)
 		error_message("5th parameter cannot be below or equal 0\n", 1);
 	if (ft_atoi(argv[2]) < 60 || ft_atoi(argv[3]) < 60
 		|| ft_atoi(argv[4]) < 60)
-		error_message("The minumum value for time related values is 60 ms", 1);
+		error_message("The minimum value for time related values is 60 ms", 1);
 }
 
 void	*start_philo_thread(void *philo_void)

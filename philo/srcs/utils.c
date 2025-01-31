@@ -22,8 +22,8 @@ size_t	get_current_time(void)
 
 int	ft_atoi(const char *str)
 {
-	int	z;
-	int	p;
+	long	z;
+	int		p;
 
 	z = 0;
 	p = 1;
@@ -38,9 +38,11 @@ int	ft_atoi(const char *str)
 	while (*str >= '0' && *str <= '9')
 	{
 		z = z * 10 + (*str - '0');
+		if (z > INT_MAX)
+            error_message("The value is too large: MAX 2,147,483,647", 1);
 		str++;
 	}
-	return (p * z);
+	return ((int)(p * z));
 }
 
 void	write_message(t_philo *philo, char *str)

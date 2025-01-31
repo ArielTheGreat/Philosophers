@@ -18,6 +18,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <sys/time.h>
+# include <limits.h>
 
 typedef struct s_program	t_program;
 
