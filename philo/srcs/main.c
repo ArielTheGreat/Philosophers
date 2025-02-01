@@ -38,22 +38,13 @@ bool	ft_philos_ready(t_program *program)
 	return (false);
 }
 
-void	*start_philo_thread(void *philo_void)
+bool	ft_monitor_ready(t_program *program)
 {
-	t_philo	*philo;
-
-	philo = (t_philo *)philo_void;
-	while (ft_philos_ready(philo->program) != true)
-		;
-	if (philo->id % 2 == 0)
-		ft_usleep(1);
-	pthread_mutex_lock(philo->meal_lock);
-	philo->start_time = get_current_time();
-	philo->last_meal = get_current_time();
-	pthread_mutex_unlock(philo->meal_lock);
-	while (1)
-		philo_routine(philo);
-	return (NULL);
+	if (program->monitor_ready == true)
+	{
+		return (true);
+	}
+	return (false);
 }
 
 void	ft_monitor_init(t_program *program)
@@ -61,6 +52,18 @@ void	ft_monitor_init(t_program *program)
 	if (pthread_create(&program->monitor, NULL, &monitor, program->philos) != 0)
 		destroy_program(program, program->num_philos,
 			"Error: could not create thread\n");
+}
+
+void	ft_wait_philos(t_program *program)
+{
+	int	i;
+
+	i = 0;
+	while (i < program->num_philos)
+	{
+		pthread_join(program->philos[i].thread, NULL);
+		i++;
+	}
 }
 
 int	create_threads(t_program *program, int philo_number)
@@ -72,23 +75,15 @@ int	create_threads(t_program *program, int philo_number)
 	while (++i < philo_number)
 	{
 		if (pthread_create(&program->philos[i].thread, NULL,
-				start_philo_thread, &program->philos[i]) != 0)
+				philo_routine, &program->philos[i]) != 0)
 			destroy_program(program, philo_number,
 				"Error: could not create thread\n");
 	}
 	pthread_mutex_lock(&program->prog_mutex);
 	program->philos_ready = true;
 	pthread_mutex_unlock(&program->prog_mutex);
-	if (pthread_join(program->monitor, NULL) != 0)
-		destroy_program(program, philo_number,
-			"Error: could not join monitor\n");
-	i = -1;
-	while (++i < philo_number)
-	{
-		if (pthread_detach(program->philos[i].thread) != 0)
-			destroy_program(program, philo_number,
-				"Error: could not detach\n");
-	}
+	ft_wait_philos(program);
+	pthread_join(program->monitor, NULL);
 	return (0);
 }
 

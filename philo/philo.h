@@ -35,7 +35,6 @@ typedef struct s_philo
 	size_t			time_to_die;
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
-	size_t			start_time;
 	int				num_of_philos;
 	int				num_times_to_eat;
 	t_mutex			*r_fork;
@@ -49,11 +48,14 @@ typedef struct s_program
 {
 	int				num_philos;
 	t_mutex			meal_lock;
+	size_t			start_time;
 	t_mutex			prog_mutex;
 	t_mutex			write_lock;
 	t_mutex			*forks;
 	t_thread		monitor;
 	bool			philos_ready;
+	bool			monitor_ready;
+	bool			philos_done;
 	t_philo			*philos;
 }	t_program;
 
@@ -62,7 +64,9 @@ void	initialize_philos(char **argv, t_program *program, int argc);
 void	initiate_program(t_program **program, int number_philos);
 size_t	get_current_time(void);
 void	ft_usleep(size_t mls);
-void	philo_routine(t_philo *philo);
+void	*philo_routine(void *philo_done);
+bool	ft_philos_ready(t_program *program);
+bool	ft_monitor_ready(t_program *program);
 void	*monitor(void *philo_void);
 void	write_message(t_philo *philo, char *str);
 void	error_message(char *text, int signal);

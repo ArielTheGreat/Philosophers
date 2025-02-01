@@ -28,7 +28,6 @@ void	initialize_philos(char **argv, t_program *program, int argc)
 		program->philos[i].time_to_die = ft_atoi(argv[2]);
 		program->philos[i].time_to_eat = ft_atoi(argv[3]);
 		program->philos[i].time_to_sleep = ft_atoi(argv[4]);
-		program->philos[i].start_time = get_current_time();
 		program->philos[i].last_meal = get_current_time();
 		program->philos[i].num_times_to_eat = -1;
 		if (argc == 6)

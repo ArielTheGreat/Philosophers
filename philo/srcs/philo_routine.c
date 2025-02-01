@@ -37,10 +37,36 @@ void	take_fork(t_philo *philo, pthread_mutex_t *fork)
 	write_message(philo, "has taken a fork");
 }
 
-void	philo_routine(t_philo *philo)
+bool	ft_is_done(t_program *program)
 {
-	take_fork(philo, philo->l_fork);
-	take_fork(philo, philo->r_fork);
-	eat_thread(philo);
-	sleep_thread(philo);
+	bool	is_done;
+
+	pthread_mutex_lock(&program->prog_mutex);
+	is_done = program->philos_done;
+	pthread_mutex_unlock(&program->prog_mutex);
+	return (is_done);
+}
+
+void	*philo_routine(void *philo_void)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)philo_void;
+	while (ft_philos_ready(philo->program) != true)
+		;
+	while (ft_monitor_ready(philo->program) != true)
+		;
+	if (philo->id % 2 == 0)
+	{
+		write_message(philo, "is thinking");
+		ft_usleep(1);
+	}
+	while (ft_is_done(philo->program) != true)
+	{
+		take_fork(philo, philo->l_fork);
+		take_fork(philo, philo->r_fork);
+		eat_thread(philo);
+		sleep_thread(philo);
+	}
+	return (NULL);
 }
