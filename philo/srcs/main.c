@@ -50,7 +50,7 @@ bool	ft_monitor_ready(t_program *program)
 void	ft_monitor_init(t_program *program)
 {
 	if (pthread_create(&program->monitor, NULL, &monitor, program->philos) != 0)
-		destroy_program(program, program->num_philos,
+		destroy_program(program,
 			"Error: could not create thread\n");
 }
 
@@ -66,19 +66,23 @@ void	ft_wait_philos(t_program *program)
 	}
 }
 
-int	create_threads(t_program *program, int philo_number)
+void	ft_init_philo(t_program *program, int i)
+{
+	if (pthread_create(&program->philos[i].thread, NULL,
+				philo_routine, &program->philos[i]) != 0)
+			destroy_program(program,
+				"Error: could not create thread\n");
+}
+
+int	create_threads(t_program *program)
 {
 	int			i;
 
 	i = -1;
+	pthread_mutex_init(&program->prog_mutex, NULL);
 	ft_monitor_init(program);
-	while (++i < philo_number)
-	{
-		if (pthread_create(&program->philos[i].thread, NULL,
-				philo_routine, &program->philos[i]) != 0)
-			destroy_program(program, philo_number,
-				"Error: could not create thread\n");
-	}
+	while (++i < program->num_philos)
+		ft_init_philo(program, i);
 	pthread_mutex_lock(&program->prog_mutex);
 	program->philos_ready = true;
 	pthread_mutex_unlock(&program->prog_mutex);
@@ -97,7 +101,7 @@ int	main(int argc, char **argv)
 	if (!program)
 		return (1);
 	initialize_philos(argv, program, argc);
-	create_threads(program, program->philos[0].num_of_philos);
-	destroy_program(program, program->philos[0].num_of_philos, 0);
+	create_threads(program);
+	destroy_program(program, 0);
 	return (0);
 }

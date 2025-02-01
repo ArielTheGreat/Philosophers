@@ -50,18 +50,20 @@ bool	ft_is_done(t_program *program)
 void	*philo_routine(void *philo_void)
 {
 	t_philo	*philo;
+	t_program *program;
 
 	philo = (t_philo *)philo_void;
-	while (ft_philos_ready(philo->program) != true)
+	program = philo->program;
+	while (ft_philos_ready(program) != true)
 		;
-	while (ft_monitor_ready(philo->program) != true)
+	while (ft_monitor_ready(program) != true)
 		;
 	if (philo->id % 2 == 0)
 	{
 		write_message(philo, "is thinking");
 		ft_usleep(1);
 	}
-	while (ft_is_done(philo->program) != true)
+	while (ft_is_done(program) != true)
 	{
 		take_fork(philo, philo->l_fork);
 		take_fork(philo, philo->r_fork);

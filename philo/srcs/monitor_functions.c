@@ -49,7 +49,9 @@ int	ft_set_last_meal(t_program *program)
 	philos = program->philos;
 	while (i < program->num_philos)
 	{
+		pthread_mutex_lock(&program->meal_lock);
 		philos[i].last_meal = program->start_time;
+		pthread_mutex_unlock(&program->meal_lock);
 		i++;
 	}
 	return (0);
@@ -58,14 +60,18 @@ int	ft_set_last_meal(t_program *program)
 void	*monitor(void *philo_void)
 {
 	t_philo	*philos;
+	t_program *program;
 	int		i;
 	size_t	time_since_last_meal;
 
 	philos = (t_philo *)philo_void;
-	wait_philosophers_ready(philos[0].program);
-	philos->program->start_time = get_current_time();
-	ft_set_last_meal(philos[0].program);
-	philos->program->monitor_ready = true;
+	program = philos[0].program;
+	wait_philosophers_ready(program);
+	pthread_mutex_lock(&program->prog_mutex);
+	program->start_time = get_current_time();
+	pthread_mutex_unlock(&program->prog_mutex);
+	ft_set_last_meal(program);
+	program->monitor_ready = true;
 	while (1)
 	{
 		i = 0;
@@ -75,7 +81,7 @@ void	*monitor(void *philo_void)
 			time_since_last_meal = get_current_time() - philos[i].last_meal;
 			if (time_since_last_meal > philos[i].time_to_die)
 			{
-				philos[i].program->philos_done = true;
+				program->philos_done = true;
 				write_message(&(philos[i]), "died");
 				pthread_mutex_unlock(philos[i].meal_lock);
 				return (NULL);
@@ -85,7 +91,7 @@ void	*monitor(void *philo_void)
 		}
 		if (all_philo_ate(philos) == 1)
 		{
-			philos[0].program->philos_done = true;
+			program->philos_done = true;
 			return (NULL);
 		}
 	}

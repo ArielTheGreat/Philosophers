@@ -71,6 +71,6 @@ void	*monitor(void *philo_void);
 void	write_message(t_philo *philo, char *str);
 void	error_message(char *text, int signal);
 size_t	ft_strlen(const char *s);
-void	destroy_program(t_program *program, int number_philos, char *str);
+void	destroy_program(t_program *program, char *str);
 
 #endif

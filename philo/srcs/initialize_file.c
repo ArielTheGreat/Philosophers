@@ -39,20 +39,20 @@ void	initialize_philos(char **argv, t_program *program, int argc)
 	}
 }
 
-void	set_mutex_forks(t_program **program, int number_philos)
+void	set_mutex_forks(t_program **program)
 {
 	int		i;
 	t_mutex *forks;
 
 	i = 0;
 	forks = (*program)->forks;
-	while (i < number_philos)
+	while (i < (*program)->num_philos)
 		pthread_mutex_init(&forks[i++], NULL);
 	i = 0;
-	while (i < number_philos)
+	while (i < (*program)->num_philos)
 	{
 		(*program)->philos[i].l_fork = &forks[i];
-		(*program)->philos[i].r_fork = &forks[(i + 1) % number_philos];
+		(*program)->philos[i].r_fork = &forks[(i + 1) % (*program)->num_philos];
 		i++;
 	}
 }
@@ -80,5 +80,5 @@ void	initiate_program(t_program **program, int number_philos)
 		free(*program);
 		return ;
 	}
-	set_mutex_forks(program, number_philos);
+	set_mutex_forks(program);
 }

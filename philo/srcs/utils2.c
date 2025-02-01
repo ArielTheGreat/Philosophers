@@ -22,12 +22,12 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-void	destroy_program(t_program *program, int number_philos, char *str)
+void	destroy_program(t_program *program, char *str)
 {
 	int	i;
 
 	i = 0;
-	while (i < number_philos)
+	while (i < program->num_philos)
 	{
 		pthread_mutex_destroy(&(program->forks[i]));
 		i++;
