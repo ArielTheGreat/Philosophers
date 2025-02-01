@@ -34,6 +34,12 @@ int	all_philo_ate(t_philo *philos)
 	return (0);
 }
 
+void wait_philosophers_ready(t_program *program)
+{
+	while(program->philos_ready != true)
+		;
+}
+
 void	*monitor(void *philo_void)
 {
 	t_philo	*philos;
@@ -41,6 +47,7 @@ void	*monitor(void *philo_void)
 	size_t	time_since_last_meal;
 
 	philos = (t_philo *)philo_void;
+	wait_philosophers_ready(philos[0].program);
 	while (1)
 	{
 		i = 0;

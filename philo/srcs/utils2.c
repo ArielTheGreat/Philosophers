@@ -34,6 +34,7 @@ void	destroy_program(t_program *program, int number_philos, char *str)
 	}
 	pthread_mutex_destroy(&(program->meal_lock));
 	pthread_mutex_destroy(&(program->write_lock));
+	pthread_mutex_destroy(&(program->prog_mutex));
 	free(program->forks);
 	free(program->philos);
 	free(program);

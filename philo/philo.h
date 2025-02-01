@@ -49,6 +49,7 @@ typedef struct s_program
 {
 	int				num_philos;
 	t_mutex			meal_lock;
+	t_mutex			prog_mutex;
 	t_mutex			write_lock;
 	t_mutex			*forks;
 	t_thread		monitor;

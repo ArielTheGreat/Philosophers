@@ -64,8 +64,10 @@ void	initiate_program(t_program **program, int number_philos)
 	if (!*program)
 		return ;
 	(*program)->num_philos = number_philos;
+	(*program)->philos_ready = false;
 	pthread_mutex_init(&(*program)->meal_lock, NULL);
 	pthread_mutex_init(&(*program)->write_lock, NULL);
+	pthread_mutex_init(&(*program)->prog_mutex, NULL);
 	(*program)->philos = (t_philo *)malloc(number_philos * sizeof(t_philo));
 	if (!(*program)->philos)
 	{

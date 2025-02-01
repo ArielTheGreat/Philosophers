@@ -29,11 +29,25 @@ void	check_arguments(int argc, char **argv)
 		error_message("The minimum value for time related values is 60 ms", 1);
 }
 
+bool	ft_philos_ready(t_program *program)
+{
+	pthread_mutex_lock(&program->prog_mutex);
+	if (program->philos_ready == true)
+	{
+		pthread_mutex_unlock(&program->prog_mutex);
+		return (true);
+	}
+	pthread_mutex_unlock(&program->prog_mutex);
+	return (false);
+}
+
 void	*start_philo_thread(void *philo_void)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_void;
+	while (ft_philos_ready(philo->program) != true)
+		;
 	if (philo->id % 2 == 0)
 		ft_usleep(1);
 	pthread_mutex_lock(philo->meal_lock);
@@ -65,6 +79,9 @@ int	create_threads(t_program *program, int philo_number)
 			destroy_program(program, philo_number,
 				"Error: could not create thread\n");
 	}
+	pthread_mutex_lock(&program->prog_mutex);
+	program->philos_ready = true;
+	pthread_mutex_unlock(&program->prog_mutex);
 	if (pthread_join(program->monitor, NULL) != 0)
 		destroy_program(program, philo_number,
 			"Error: could not join monitor\n");
