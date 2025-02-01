@@ -31,13 +31,10 @@ void	check_arguments(int argc, char **argv)
 
 bool	ft_philos_ready(t_program *program)
 {
-	pthread_mutex_lock(&program->prog_mutex);
 	if (program->philos_ready == true)
 	{
-		pthread_mutex_unlock(&program->prog_mutex);
 		return (true);
 	}
-	pthread_mutex_unlock(&program->prog_mutex);
 	return (false);
 }
 
