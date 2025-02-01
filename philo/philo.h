@@ -17,14 +17,17 @@
 # include <pthread.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <stdbool.h>
 # include <sys/time.h>
 # include <limits.h>
 
 typedef struct s_program	t_program;
+typedef pthread_mutex_t		t_mutex;
+typedef pthread_t			t_thread;
 
 typedef struct s_philo
 {
-	pthread_t		thread;
+	t_thread		thread;
 	int				id;
 	int				eating;
 	int				meals_eaten;
@@ -35,18 +38,21 @@ typedef struct s_philo
 	size_t			start_time;
 	int				num_of_philos;
 	int				num_times_to_eat;
-	pthread_mutex_t	*r_fork;
-	pthread_mutex_t	*l_fork;
-	pthread_mutex_t	*write_lock;
-	pthread_mutex_t	*meal_lock;
+	t_mutex			*r_fork;
+	t_mutex			*l_fork;
+	t_mutex			*write_lock;
+	t_mutex			*meal_lock;
 	t_program		*program;
 }	t_philo;
 
 typedef struct s_program
 {
-	pthread_mutex_t	meal_lock;
-	pthread_mutex_t	write_lock;
-	pthread_mutex_t	*forks;
+	int				num_philos;
+	t_mutex			meal_lock;
+	t_mutex			write_lock;
+	t_mutex			*forks;
+	t_thread		monitor;
+	bool			philos_ready;
 	t_philo			*philos;
 }	t_program;
 

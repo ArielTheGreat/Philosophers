@@ -45,12 +45,19 @@ void	*start_philo_thread(void *philo_void)
 	return (NULL);
 }
 
+void	ft_monitor_init(t_program *program)
+{
+	if (pthread_create(&program->monitor, NULL, &monitor, program->philos) != 0)
+		destroy_program(program, program->num_philos,
+			"Error: could not create thread\n");
+}
+
 int	create_threads(t_program *program, int philo_number)
 {
-	pthread_t	monitor_thread;
 	int			i;
 
 	i = -1;
+	ft_monitor_init(program);
 	while (++i < philo_number)
 	{
 		if (pthread_create(&program->philos[i].thread, NULL,
@@ -58,10 +65,7 @@ int	create_threads(t_program *program, int philo_number)
 			destroy_program(program, philo_number,
 				"Error: could not create thread\n");
 	}
-	if (pthread_create(&monitor_thread, NULL, &monitor, program->philos) != 0)
-		destroy_program(program, philo_number,
-			"Error: could not create thread\n");
-	if (pthread_join(monitor_thread, NULL) != 0)
+	if (pthread_join(program->monitor, NULL) != 0)
 		destroy_program(program, philo_number,
 			"Error: could not join monitor\n");
 	i = -1;

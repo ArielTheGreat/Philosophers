@@ -40,12 +40,13 @@ void	initialize_philos(char **argv, t_program *program, int argc)
 	}
 }
 
-void	set_mutex_forks(t_program **program, int number_philos,
-			pthread_mutex_t *forks)
+void	set_mutex_forks(t_program **program, int number_philos)
 {
 	int		i;
+	t_mutex *forks;
 
 	i = 0;
+	forks = (*program)->forks;
 	while (i < number_philos)
 		pthread_mutex_init(&forks[i++], NULL);
 	i = 0;
@@ -59,11 +60,10 @@ void	set_mutex_forks(t_program **program, int number_philos,
 
 void	initiate_program(t_program **program, int number_philos)
 {
-	pthread_mutex_t	*forks;
-
 	*program = (t_program *)malloc(sizeof(t_program));
 	if (!*program)
 		return ;
+	(*program)->num_philos = number_philos;
 	pthread_mutex_init(&(*program)->meal_lock, NULL);
 	pthread_mutex_init(&(*program)->write_lock, NULL);
 	(*program)->philos = (t_philo *)malloc(number_philos * sizeof(t_philo));
@@ -72,13 +72,12 @@ void	initiate_program(t_program **program, int number_philos)
 		free(*program);
 		return ;
 	}
-	forks = malloc(number_philos * sizeof(pthread_mutex_t));
-	if (!forks)
+	(*program)->forks = malloc(number_philos * sizeof(t_mutex));
+	if (!(*program)->forks)
 	{
 		free((*program)->philos);
 		free(*program);
 		return ;
 	}
-	(*program)->forks = forks;
-	set_mutex_forks(program, number_philos, forks);
+	set_mutex_forks(program, number_philos);
 }
