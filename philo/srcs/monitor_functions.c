@@ -52,7 +52,9 @@ bool	check_single_philosopher(t_philo *philo, t_program *program)
 	time_since_last_meal = get_current_time() - philo->last_meal;
 	if (time_since_last_meal > philo->time_to_die)
 	{
+		pthread_mutex_lock(&program->prog_mutex);
 		program->philos_done = true;
+		pthread_mutex_unlock(&program->prog_mutex);
 		pthread_mutex_lock(philo->write_lock);
 		printf("%zu %d %s\n",
 			get_current_time() - program->start_time,
@@ -85,7 +87,9 @@ void	*monitor(void *philo_void)
 		}
 		if (all_philo_ate(philos) == 1)
 		{
+			pthread_mutex_lock(&program->prog_mutex);
 			program->philos_done = true;
+			pthread_mutex_unlock(&program->prog_mutex);
 			return (NULL);
 		}
 	}
