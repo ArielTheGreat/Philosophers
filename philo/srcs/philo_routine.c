@@ -15,11 +15,11 @@
 void	eat_thread(t_philo *philo)
 {
 	write_message(philo, "is eating");
+	ft_usleep(philo->time_to_eat);
 	pthread_mutex_lock(philo->meal_lock);
 	philo->last_meal = get_current_time();
 	philo->meals_eaten++;
 	pthread_mutex_unlock(philo->meal_lock);
-	ft_usleep(philo->time_to_eat);
 	pthread_mutex_unlock(philo->l_fork);
 	pthread_mutex_unlock(philo->r_fork);
 }
@@ -71,7 +71,7 @@ void	*philo_routine(void *philo_void)
 		ft_one_philo(philo);
 		return (NULL);
 	}
-	if (philo->id % 2 == 0)
+	if (philo->id % 2 != 0)
 	{
 		write_message(philo, "is thinking");
 		ft_usleep(1);

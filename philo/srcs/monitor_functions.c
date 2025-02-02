@@ -82,7 +82,10 @@ void	*monitor(void *philo_void)
 			if (time_since_last_meal > philos[i].time_to_die)
 			{
 				program->philos_done = true;
-				write_message(&(philos[i]), "died");
+				pthread_mutex_lock(philos[i].write_lock);
+				printf("%zu %d %s\n", get_current_time() - program->start_time,
+					philos[i].id, "died");
+				pthread_mutex_unlock(philos[i].write_lock);
 				pthread_mutex_unlock(philos[i].meal_lock);
 				return (NULL);
 			}

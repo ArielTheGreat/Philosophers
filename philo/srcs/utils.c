@@ -47,6 +47,13 @@ int	ft_atoi(const char *str)
 
 void	write_message(t_philo *philo, char *str)
 {
+	pthread_mutex_lock(&philo->program->prog_mutex);
+	if (philo->program->philos_done)
+	{
+		pthread_mutex_unlock(&philo->program->prog_mutex);
+		return ;
+	}
+	pthread_mutex_unlock(&philo->program->prog_mutex);
 	pthread_mutex_lock(philo->write_lock);
 	printf("%zu %d %s\n", get_current_time() - philo->program->start_time,
 		philo->id, str);
