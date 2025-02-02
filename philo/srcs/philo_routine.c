@@ -12,31 +12,6 @@
 
 #include "../philo.h"
 
-void	eat_thread(t_philo *philo)
-{
-	write_message(philo, "is eating");
-	ft_usleep(philo->time_to_eat);
-	pthread_mutex_lock(philo->meal_lock);
-	philo->last_meal = get_current_time();
-	philo->meals_eaten++;
-	pthread_mutex_unlock(philo->meal_lock);
-	pthread_mutex_unlock(philo->l_fork);
-	pthread_mutex_unlock(philo->r_fork);
-}
-
-void	sleep_thread(t_philo *philo)
-{
-	write_message(philo, "is sleeping");
-	ft_usleep(philo->time_to_sleep);
-	write_message(philo, "is thinking");
-}
-
-void	take_fork(t_philo *philo, pthread_mutex_t *fork)
-{
-	pthread_mutex_lock(fork);
-	write_message(philo, "has taken a fork");
-}
-
 bool	ft_is_done(t_program *program)
 {
 	bool	is_done;
@@ -58,15 +33,13 @@ void	ft_one_philo(t_philo *philo)
 void	*philo_routine(void *philo_void)
 {
 	t_philo	*philo;
-	t_program *program;
 
 	philo = (t_philo *)philo_void;
-	program = philo->program;
-	while (ft_philos_ready(program) != true)
+	while (ft_philos_ready(philo->program) != true)
 		;
-	while (ft_monitor_ready(program) != true)
+	while (ft_monitor_ready(philo->program) != true)
 		;
-	if (program->num_philos == 1)
+	if (philo->program->num_philos == 1)
 	{
 		ft_one_philo(philo);
 		return (NULL);
@@ -76,7 +49,7 @@ void	*philo_routine(void *philo_void)
 		write_message(philo, "is thinking");
 		ft_usleep(1);
 	}
-	while (ft_is_done(program) != true)
+	while (ft_is_done(philo->program) != true)
 	{
 		take_fork(philo, philo->l_fork);
 		take_fork(philo, philo->r_fork);

@@ -72,5 +72,13 @@ void	write_message(t_philo *philo, char *str);
 void	error_message(char *text, int signal);
 size_t	ft_strlen(const char *s);
 void	destroy_program(t_program *program, char *str);
+bool	ft_philos_ready(t_program *program);
+bool	ft_monitor_ready(t_program *program);
+void	ft_monitor_init(t_program *program);
+void	eat_thread(t_philo *philo);
+void	sleep_thread(t_philo *philo);
+void	take_fork(t_philo *philo, pthread_mutex_t *fork);
+int		all_philo_ate(t_philo *philos);
+void	wait_philosophers_ready(t_program *program);
 
 #endif

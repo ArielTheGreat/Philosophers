@@ -41,3 +41,28 @@ void	destroy_program(t_program *program, char *str)
 	if (str)
 		error_message(str, 1);
 }
+
+bool	ft_philos_ready(t_program *program)
+{
+	if (program->philos_ready == true)
+	{
+		return (true);
+	}
+	return (false);
+}
+
+bool	ft_monitor_ready(t_program *program)
+{
+	if (program->monitor_ready == true)
+	{
+		return (true);
+	}
+	return (false);
+}
+
+void	ft_monitor_init(t_program *program)
+{
+	if (pthread_create(&program->monitor, NULL, &monitor, program->philos) != 0)
+		destroy_program(program,
+			"Error: could not create thread\n");
+}

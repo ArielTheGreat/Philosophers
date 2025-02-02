@@ -2,7 +2,8 @@ SRC_DIR = srcs
 OBJ_DIR = objs
 
 SRCS = $(SRC_DIR)/initialize_file.c $(SRC_DIR)/main.c $(SRC_DIR)/monitor_functions.c \
-        $(SRC_DIR)/philo_routine.c $(SRC_DIR)/utils.c $(SRC_DIR)/utils2.c
+        $(SRC_DIR)/philo_routine.c $(SRC_DIR)/utils.c $(SRC_DIR)/utils2.c \
+		$(SRC_DIR)/philo_routine2.c $(SRC_DIR)/monitor_functions2.c
 
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

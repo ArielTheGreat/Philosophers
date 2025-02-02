@@ -41,8 +41,8 @@ void	initialize_philos(char **argv, t_program *program, int argc)
 
 void	set_mutex_forks(t_program **program)
 {
-	int		i;
-	t_mutex *forks;
+	int			i;
+	t_mutex		*forks;
 
 	i = 0;
 	forks = (*program)->forks;

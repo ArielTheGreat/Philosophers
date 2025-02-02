@@ -39,7 +39,7 @@ int	ft_atoi(const char *str)
 	{
 		z = z * 10 + (*str - '0');
 		if (z > INT_MAX)
-            error_message("The value is too large: MAX 2,147,483,647", 1);
+			error_message("The value is too large: MAX 2,147,483,647", 1);
 		str++;
 	}
 	return ((int)(p * z));
