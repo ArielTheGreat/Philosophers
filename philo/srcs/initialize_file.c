@@ -64,6 +64,7 @@ void	initiate_program(t_program **program, int number_philos)
 		return ;
 	(*program)->num_philos = number_philos;
 	(*program)->philos_ready = false;
+	(*program)->monitor_ready = false;
 	pthread_mutex_init(&(*program)->meal_lock, NULL);
 	pthread_mutex_init(&(*program)->write_lock, NULL);
 	pthread_mutex_init(&(*program)->prog_mutex, NULL);
