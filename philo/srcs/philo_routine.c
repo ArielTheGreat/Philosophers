@@ -47,6 +47,14 @@ bool	ft_is_done(t_program *program)
 	return (is_done);
 }
 
+void	ft_one_philo(t_philo *philo)
+{
+	pthread_mutex_lock(philo->l_fork);
+	write_message(philo, "has taken a fork");
+	pthread_mutex_unlock(philo->l_fork);
+	return ;
+}
+
 void	*philo_routine(void *philo_void)
 {
 	t_philo	*philo;
@@ -58,6 +66,11 @@ void	*philo_routine(void *philo_void)
 		;
 	while (ft_monitor_ready(program) != true)
 		;
+	if (program->num_philos == 1)
+	{
+		ft_one_philo(philo);
+		return (NULL);
+	}
 	if (philo->id % 2 == 0)
 	{
 		write_message(philo, "is thinking");
