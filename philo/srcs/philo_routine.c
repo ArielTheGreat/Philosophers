@@ -30,6 +30,19 @@ void	ft_one_philo(t_philo *philo)
 	return ;
 }
 
+int check_one_philo(t_program *program)
+{
+	pthread_mutex_lock(&program->prog_mutex);
+	if (program->num_philos == 1)
+	{
+		pthread_mutex_unlock(&program->prog_mutex);
+		ft_one_philo(program->philos);
+		return (1);
+	}
+	pthread_mutex_unlock(&program->prog_mutex);
+	return (0);
+}
+
 void	*philo_routine(void *philo_void)
 {
 	t_philo	*philo;
@@ -38,11 +51,8 @@ void	*philo_routine(void *philo_void)
 	wait_philosophers_ready(philo->program);
 	while (ft_monitor_ready(philo->program) != true)
 		;
-	if (philo->program->num_philos == 1)
-	{
-		ft_one_philo(philo);
+	if (check_one_philo(philo->program) == 1)
 		return (NULL);
-	}
 	if (philo->id % 2 != 0)
 	{
 		write_message(philo, "is thinking");
