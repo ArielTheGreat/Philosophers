@@ -78,6 +78,5 @@ void	eat_thread(t_philo *philo);
 void	sleep_thread(t_philo *philo);
 void	take_fork(t_philo *philo, pthread_mutex_t *fork);
 int		all_philo_ate(t_philo *philos);
-void	wait_philosophers_ready(t_program *program);
 
 #endif
