@@ -29,11 +29,8 @@ int	ft_set_last_meal(t_program *program)
 	return (0);
 }
 
-void	initialize_monitor(t_philo *philos)
+void	initialize_monitor(t_program *program)
 {
-	t_program	*program;
-
-	program = philos[0].program;
 	wait_philosophers_ready(program);
 	pthread_mutex_lock(&program->prog_mutex);
 	program->start_time = get_current_time();
@@ -75,7 +72,7 @@ void	*monitor(void *philo_void)
 
 	philos = (t_philo *)philo_void;
 	program = philos[0].program;
-	initialize_monitor(philos);
+	initialize_monitor(program);
 	while (1)
 	{
 		i = 0;

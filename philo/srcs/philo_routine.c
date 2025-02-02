@@ -60,8 +60,6 @@ void	*philo_routine(void *philo_void)
 	}
 	while (ft_is_done(philo->program) != true)
 	{
-		take_fork(philo, philo->l_fork);
-		take_fork(philo, philo->r_fork);
 		eat_thread(philo);
 		sleep_thread(philo);
 	}
