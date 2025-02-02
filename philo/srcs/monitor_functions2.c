@@ -34,8 +34,20 @@ int	all_philo_ate(t_philo *philos)
 	return (0);
 }
 
+bool	ft_philos_ready(t_program *program)
+{
+	pthread_mutex_lock(&program->prog_mutex);
+	if (program->philos_ready == true)
+	{
+		pthread_mutex_unlock(&program->prog_mutex);
+		return (true);
+	}
+	pthread_mutex_unlock(&program->prog_mutex);
+	return (false);
+}
+
 void	wait_philosophers_ready(t_program *program)
 {
-	while (program->philos_ready != true)
+	while (ft_philos_ready(program) != true)
 		;
 }

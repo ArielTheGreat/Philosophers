@@ -35,8 +35,7 @@ void	*philo_routine(void *philo_void)
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_void;
-	while (ft_philos_ready(philo->program) != true)
-		;
+	wait_philosophers_ready(philo->program);
 	while (ft_monitor_ready(philo->program) != true)
 		;
 	if (philo->program->num_philos == 1)

@@ -39,7 +39,9 @@ void	initialize_monitor(t_philo *philos)
 	program->start_time = get_current_time();
 	pthread_mutex_unlock(&program->prog_mutex);
 	ft_set_last_meal(program);
+	pthread_mutex_lock(&program->prog_mutex);
 	program->monitor_ready = true;
+	pthread_mutex_unlock(&program->prog_mutex);
 }
 
 bool	check_single_philosopher(t_philo *philo, t_program *program)

@@ -42,21 +42,15 @@ void	destroy_program(t_program *program, char *str)
 		error_message(str, 1);
 }
 
-bool	ft_philos_ready(t_program *program)
-{
-	if (program->philos_ready == true)
-	{
-		return (true);
-	}
-	return (false);
-}
-
 bool	ft_monitor_ready(t_program *program)
 {
+	pthread_mutex_lock(&program->prog_mutex);
 	if (program->monitor_ready == true)
 	{
+		pthread_mutex_unlock(&program->prog_mutex);
 		return (true);
 	}
+	pthread_mutex_unlock(&program->prog_mutex);
 	return (false);
 }
 
