@@ -76,7 +76,6 @@ void	destroy_program(t_program *program, char *str);
 void	ft_monitor_init(t_program *program);
 void	eat_thread(t_philo *philo);
 void	sleep_thread(t_philo *philo);
-void	take_fork(t_philo *philo, pthread_mutex_t *fork);
 int		all_philo_ate(t_philo *philos);
 
 #endif
