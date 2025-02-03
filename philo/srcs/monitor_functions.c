@@ -64,6 +64,13 @@ bool	check_single_philosopher(t_philo *philo, t_program *program)
 	return (false);
 }
 
+void	set_philos_done(t_program *program)
+{
+	pthread_mutex_lock(&program->prog_mutex);
+	program->philos_done = true;
+	pthread_mutex_unlock(&program->prog_mutex);
+}
+
 void	*monitor(void *philo_void)
 {
 	t_philo		*philos;
@@ -84,9 +91,7 @@ void	*monitor(void *philo_void)
 		}
 		if (all_philo_ate(philos) == 1)
 		{
-			pthread_mutex_lock(&program->prog_mutex);
-			program->philos_done = true;
-			pthread_mutex_unlock(&program->prog_mutex);
+			set_philos_done(program);
 			return (NULL);
 		}
 		usleep(100);

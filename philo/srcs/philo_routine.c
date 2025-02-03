@@ -15,6 +15,7 @@
 bool	ft_is_done(t_program *program)
 {
 	bool	is_done;
+
 	pthread_mutex_lock(&program->prog_mutex);
 	is_done = program->philos_done;
 	pthread_mutex_unlock(&program->prog_mutex);
@@ -29,7 +30,7 @@ void	ft_one_philo(t_philo *philo)
 	return ;
 }
 
-int check_one_philo(t_program *program)
+int	check_one_philo(t_program *program)
 {
 	pthread_mutex_lock(&program->prog_mutex);
 	if (program->num_philos == 1)
