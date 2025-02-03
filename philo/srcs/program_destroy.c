@@ -1,35 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   monitor_functions2.c                               :+:      :+:    :+:   */
+/*   program_destroy.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: frocha <frocha@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/02 13:00:03 by frocha            #+#    #+#             */
-/*   Updated: 2025/02/02 13:00:05 by frocha           ###   ########.fr       */
+/*   Created: 2025/02/03 16:54:48 by frocha            #+#    #+#             */
+/*   Updated: 2025/02/03 16:54:50 by frocha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-int	all_philo_ate(t_philo *philos)
+void	destroy_program(t_program *program, char *str)
 {
 	int	i;
-	int	finished;
 
-	if (philos[0].num_times_to_eat == -1)
-		return (0);
 	i = 0;
-	finished = 0;
-	while (i < philos[0].num_of_philos)
+	while (i < program->num_philos)
 	{
-		pthread_mutex_lock(philos[i].meal_lock);
-		if (philos[i].meals_eaten >= philos[i].num_times_to_eat)
-			finished++;
-		pthread_mutex_unlock(philos[i].meal_lock);
+		pthread_mutex_destroy(&(program->forks[i]));
 		i++;
 	}
-	if (finished == philos[0].num_of_philos)
-		return (1);
-	return (0);
+	pthread_mutex_destroy(&(program->meal_lock));
+	pthread_mutex_destroy(&(program->write_lock));
+	pthread_mutex_destroy(&(program->prog_mutex));
+	free(program->forks);
+	free(program->philos);
+	free(program);
+	if (str)
+		error_message(str, 1);
 }

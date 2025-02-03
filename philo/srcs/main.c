@@ -29,43 +29,6 @@ void	check_arguments(int argc, char **argv)
 		error_message("The minimum value for time related values is 60 ms", 1);
 }
 
-void	ft_wait_philos(t_program *program)
-{
-	int	i;
-
-	i = 0;
-	while (i < program->num_philos)
-	{
-		pthread_join(program->philos[i].thread, NULL);
-		i++;
-	}
-}
-
-void	ft_init_philo(t_program *program, int i)
-{
-	if (pthread_create(&program->philos[i].thread, NULL,
-			philo_routine, &program->philos[i]) != 0)
-		destroy_program(program,
-			"Error: could not create thread\n");
-}
-
-int	create_threads(t_program *program)
-{
-	int			i;
-
-	i = -1;
-	pthread_mutex_init(&program->prog_mutex, NULL);
-	ft_monitor_init(program);
-	while (++i < program->num_philos)
-		ft_init_philo(program, i);
-	pthread_mutex_lock(&program->prog_mutex);
-	program->philos_ready = true;
-	pthread_mutex_unlock(&program->prog_mutex);
-	ft_wait_philos(program);
-	pthread_join(program->monitor, NULL);
-	return (0);
-}
-
 int	main(int argc, char **argv)
 {
 	t_program	*program;

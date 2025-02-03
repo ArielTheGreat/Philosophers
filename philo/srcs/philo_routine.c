@@ -49,8 +49,7 @@ void	*philo_routine(void *philo_void)
 
 	philo = (t_philo *)philo_void;
 	wait_philosophers_ready(philo->program);
-	while (ft_monitor_ready(philo->program) != true)
-		;
+	wait_monitor_ready(philo->program);
 	if (check_one_philo(philo->program) == 1)
 		return (NULL);
 	if (philo->id % 2 != 0)

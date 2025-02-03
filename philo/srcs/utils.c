@@ -45,21 +45,6 @@ int	ft_atoi(const char *str)
 	return ((int)(p * z));
 }
 
-void	write_message(t_philo *philo, char *str)
-{
-	pthread_mutex_lock(&philo->program->prog_mutex);
-	if (philo->program->philos_done)
-	{
-		pthread_mutex_unlock(&philo->program->prog_mutex);
-		return ;
-	}
-	pthread_mutex_lock(philo->write_lock);
-	pthread_mutex_unlock(&philo->program->prog_mutex);
-	printf("%zu %d %s\n", get_current_time() - philo->program->start_time,
-		philo->id, str);
-	pthread_mutex_unlock(philo->write_lock);
-}
-
 void	ft_usleep(size_t mls)
 {
 	size_t	start;
@@ -69,9 +54,12 @@ void	ft_usleep(size_t mls)
 		usleep(500);
 }
 
-void	error_message(char *text, int signal)
+size_t	ft_strlen(const char *s)
 {
-	if (text)
-		write(2, text, ft_strlen(text) + 1);
-	exit(signal);
+	int	i;
+
+	i = 0;
+	while (s[i])
+		++i;
+	return (i);
 }

@@ -1,45 +1,51 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils2.c                                           :+:      :+:    :+:   */
+/*   wait_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: frocha <frocha@student.42heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/29 14:25:26 by frocha            #+#    #+#             */
-/*   Updated: 2025/01/29 14:25:27 by frocha           ###   ########.fr       */
+/*   Created: 2025/02/03 16:41:37 by frocha            #+#    #+#             */
+/*   Updated: 2025/02/03 16:41:38 by frocha           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-size_t	ft_strlen(const char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-		++i;
-	return (i);
-}
-
-void	destroy_program(t_program *program, char *str)
+void	ft_wait_philos(t_program *program)
 {
 	int	i;
 
 	i = 0;
 	while (i < program->num_philos)
 	{
-		pthread_mutex_destroy(&(program->forks[i]));
+		pthread_join(program->philos[i].thread, NULL);
 		i++;
 	}
-	pthread_mutex_destroy(&(program->meal_lock));
-	pthread_mutex_destroy(&(program->write_lock));
-	pthread_mutex_destroy(&(program->prog_mutex));
-	free(program->forks);
-	free(program->philos);
-	free(program);
-	if (str)
-		error_message(str, 1);
+}
+
+void	wait_philosophers_ready(t_program *program)
+{
+	while (ft_philos_ready(program) != true)
+		;
+}
+
+void	wait_monitor_ready(t_program *program)
+{
+	while (ft_monitor_ready(program) != true)
+		;
+}
+
+bool	ft_philos_ready(t_program *program)
+{
+	pthread_mutex_lock(&program->prog_mutex);
+	if (program->philos_ready == true)
+	{
+		pthread_mutex_unlock(&program->prog_mutex);
+		return (true);
+	}
+	pthread_mutex_unlock(&program->prog_mutex);
+	return (false);
 }
 
 bool	ft_monitor_ready(t_program *program)
@@ -52,11 +58,4 @@ bool	ft_monitor_ready(t_program *program)
 	}
 	pthread_mutex_unlock(&program->prog_mutex);
 	return (false);
-}
-
-void	ft_monitor_init(t_program *program)
-{
-	if (pthread_create(&program->monitor, NULL, &monitor, program->philos) != 0)
-		destroy_program(program,
-			"Error: could not create thread\n");
 }

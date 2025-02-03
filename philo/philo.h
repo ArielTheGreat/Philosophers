@@ -77,5 +77,13 @@ void	ft_monitor_init(t_program *program);
 void	eat_thread(t_philo *philo);
 void	sleep_thread(t_philo *philo);
 int		all_philo_ate(t_philo *philos);
+void	ft_wait_philos(t_program *program);
+void	wait_philosophers_ready(t_program *program);
+void	error_message(char *text, int signal);
+void	write_message(t_philo *philo, char *str);
+void	ft_init_philo(t_program *program, int i);
+void	ft_monitor_init(t_program *program);
+int		create_threads(t_program *program);
+void	wait_monitor_ready(t_program *program);
 
 #endif
