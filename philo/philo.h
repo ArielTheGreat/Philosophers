@@ -59,31 +59,46 @@ typedef struct s_program
 	t_philo			*philos;
 }	t_program;
 
+/* utils.c */
 int		ft_atoi(const char *str);
-void	initialize_philos(char **argv, t_program *program, int argc);
-void	initiate_program(t_program **program, int number_philos);
 size_t	get_current_time(void);
 void	ft_usleep(size_t mls);
-void	*philo_routine(void *philo_done);
-bool	ft_philos_ready(t_program *program);
-void	wait_philosophers_ready(t_program *program);
-bool	ft_monitor_ready(t_program *program);
-void	*monitor(void *philo_void);
-void	write_message(t_philo *philo, char *str);
-void	error_message(char *text, int signal);
 size_t	ft_strlen(const char *s);
-void	destroy_program(t_program *program, char *str);
-void	ft_monitor_init(t_program *program);
-void	eat_thread(t_philo *philo);
-void	sleep_thread(t_philo *philo);
-int		all_philo_ate(t_philo *philos);
-void	ft_wait_philos(t_program *program);
-void	wait_philosophers_ready(t_program *program);
-void	error_message(char *text, int signal);
-void	write_message(t_philo *philo, char *str);
+
+/* initialize_file.c */
+void	initiate_program(t_program **program, int number_philos);
+void	initialize_philos(char **argv, t_program *program, int argc);
+
+/* monitor_functions.c */
+void	*monitor(void *philo_void);
+
+/* thread_creator.c */
 void	ft_init_philo(t_program *program, int i);
 void	ft_monitor_init(t_program *program);
 int		create_threads(t_program *program);
+
+/* program_destroy.c */
+void	destroy_program(t_program *program, char *str);
+
+/* output_functions.c */
+void	write_message(t_philo *philo, char *str);
+void	error_message(char *text, int signal);
+
+/* philo_routine.c */
+void	*philo_routine(void *philo_done);
+
+/* wait_functions.c */
+void	wait_philosophers_ready(t_program *program);
 void	wait_monitor_ready(t_program *program);
+void	ft_wait_philos(t_program *program);
+bool	ft_philos_ready(t_program *program);
+bool	ft_monitor_ready(t_program *program);
+
+/* philo_actions.c */
+void	eat_thread(t_philo *philo);
+void	sleep_thread(t_philo *philo);
+
+/* monitor_functions2.c */
+int		all_philo_ate(t_philo *philos);
 
 #endif
