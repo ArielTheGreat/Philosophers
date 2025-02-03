@@ -89,6 +89,7 @@ void	*monitor(void *philo_void)
 			pthread_mutex_unlock(&program->prog_mutex);
 			return (NULL);
 		}
+		usleep(100);
 	}
 	return (NULL);
 }

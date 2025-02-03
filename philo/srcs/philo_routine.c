@@ -15,7 +15,6 @@
 bool	ft_is_done(t_program *program)
 {
 	bool	is_done;
-
 	pthread_mutex_lock(&program->prog_mutex);
 	is_done = program->philos_done;
 	pthread_mutex_unlock(&program->prog_mutex);
@@ -56,7 +55,7 @@ void	*philo_routine(void *philo_void)
 	if (philo->id % 2 != 0)
 	{
 		write_message(philo, "is thinking");
-		ft_usleep(1);
+		ft_usleep(10);
 	}
 	while (ft_is_done(philo->program) != true)
 	{
